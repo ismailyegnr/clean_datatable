@@ -94,9 +94,8 @@ class _HomeViewState extends State<HomeView> {
       body: !_isLoading
           ? ExpandableTheme(
               data: ExpandableThemeData(
-                headerTextStyle: const TextStyle(color: Colors.amber),
                 rowsTextStyle: const TextStyle(color: Colors.black),
-                expandedBorderColor: Colors.amber,
+                expandedBorderColor: Colors.red,
               ),
               child: ExpandableDataTable(
                 rows: rows,

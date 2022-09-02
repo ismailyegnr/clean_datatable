@@ -294,14 +294,6 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
           _handleRowData(shownRowNames, rowData, shownCells, unshownBodyCells);
 
-          Color _getRowBackgroundColor() {
-            if (index % 2 != 0) {
-              return const Color(0xffF7F7F7);
-            }
-
-            return const Color(0xffffffff);
-          }
-
           return Theme(
             data: ThemeData().copyWith(
               dividerColor: context.expandableTheme.expandedBorderColor,
@@ -311,8 +303,8 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
               key: _keys != null ? _keys![index] : UniqueKey(),
               showExpansionIcon: unshownBodyCells.isNotEmpty,
               expansionIcon: context.expandableTheme.expansionIcon,
-              collapsedBackgroundColor: _getRowBackgroundColor(),
-              backgroundColor: _getRowBackgroundColor(),
+              collapsedBackgroundColor: context.expandableTheme.rowsColor,
+              backgroundColor: context.expandableTheme.rowsColor,
               trailingWidth: _trailingWidth,
               secondTrailing: buildEditButton(context, index),
               title: buildRowTitleContent(shownCells),
