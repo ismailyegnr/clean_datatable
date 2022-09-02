@@ -67,12 +67,12 @@ class ExpandableThemeData {
     rowsBorder ??= BorderSide.none;
     editIcon ??= Icon(
       Icons.edit,
-      color: theme.iconTheme.color,
+      color: theme.unselectedWidgetColor,
       size: 16,
     );
     expansionIcon ??= Icon(
       Icons.more_vert,
-      color: theme.iconTheme.color,
+      color: theme.unselectedWidgetColor,
       size: 18,
     );
 
