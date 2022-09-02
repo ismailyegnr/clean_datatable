@@ -1,13 +1,13 @@
 import 'dart:convert';
 
+import 'package:clear_datatable/component/utility/expandable_theme.dart';
+import 'package:clear_datatable/component/utility/expandable_theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'component/expandable_data_table.dart';
 import 'component/model/expandable_column.dart';
 import 'component/model/expandable_row.dart';
-import 'component/utility/expandable_theme.dart';
-import 'component/utility/expandable_theme_data.dart';
 import 'model/models.dart';
 
 //Datatable Page
@@ -94,8 +94,9 @@ class _HomeViewState extends State<HomeView> {
       body: !_isLoading
           ? ExpandableTheme(
               data: ExpandableThemeData(
-                rowsTextStyle: const TextStyle(color: Colors.black),
-                rowsBorder: const BorderSide(color: Colors.purple),
+                context,
+                rowsBorder: BorderSide(color: Colors.amber),
+                expandedBorderColor: Colors.transparent,
               ),
               child: ExpandableDataTable(
                 rows: rows,

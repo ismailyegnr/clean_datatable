@@ -297,13 +297,12 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
           return Container(
             decoration: BoxDecoration(
               border: Border(
-                bottom: context.expandableTheme.rowsBorder ?? BorderSide.none,
+                bottom: context.expandableTheme.rowsBorder,
               ),
             ),
             child: Theme(
               data: ThemeData().copyWith(
                 dividerColor: context.expandableTheme.expandedBorderColor,
-                expansionTileTheme: const ExpansionTileThemeData(),
               ),
               child: custom_tile.ExpansionTile(
                 key: _keys != null ? _keys![index] : UniqueKey(),

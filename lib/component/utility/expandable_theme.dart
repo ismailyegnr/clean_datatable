@@ -12,14 +12,14 @@ class ExpandableTheme extends InheritedWidget {
     required ExpandableDataTable child,
   }) : super(key: key, child: child);
 
-  static final ExpandableThemeData _expandableThemeData =
-      ExpandableThemeData.normal();
-
   static ExpandableThemeData of(BuildContext context) {
     final ExpandableTheme? result =
         context.dependOnInheritedWidgetOfExactType<ExpandableTheme>();
 
-    final ExpandableThemeData themeData = result?.data ?? _expandableThemeData;
+    final ExpandableThemeData expandableThemeData =
+        ExpandableThemeData.normal(context);
+
+    final ExpandableThemeData themeData = result?.data ?? expandableThemeData;
 
     return themeData;
   }
