@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart';
+
+import '../extension/context_extension.dart';
+import '../model/expandable_column.dart';
+import '../utility/sort_information.dart';
+
+class TableHeader extends StatelessWidget {
+  final SortInformation currentSort;
+  final List<ExpandableColumn<dynamic>> headerRow;
+  final Function(ExpandableColumn<dynamic>) onTitleTap;
+
+  final double trailingWidth;
+
+  const TableHeader({
+    Key? key,
+    required this.headerRow,
+    required this.currentSort,
+    required this.onTitleTap,
+    required this.trailingWidth,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var boxDecoration = BoxDecoration(
+      border: Border(
+        bottom: context.expandableTheme.headerBorder,
+      ),
+      color: context.expandableTheme.headerColor,
+    );
+
+    return Container(
+      decoration: boxDecoration,
+      child: ListTile(
+        dense: true,
+        title: Row(
+          children: headerRow
+              .map(
+                (e) => Expanded(
+                  flex: e.columnFlex,
+                  child: buildHeaderTitle(context, e),
+                ),
+              )
+              .toList(),
+        ),
+        trailing: SizedBox(
+          width: trailingWidth,
+        ),
+      ),
+    );
+  }
+
+  GestureDetector buildHeaderTitle(
+      BuildContext context, ExpandableColumn<dynamic> column) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => onTitleTap(column),
+      child: SizedBox(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: context.lowValue),
+          child: Row(
+            children: [
+              Text(
+                column.columnTitle,
+                style: context.expandableTheme.headerTextStyle,
+              ),
+              Visibility(
+                visible: currentSort.sortedColumn != null &&
+                    currentSort.sortedColumn == column,
+                child: currentSort.sortOption == SortOption.ASC
+                    ? const Icon(Icons.arrow_drop_up)
+                    : const Icon(Icons.arrow_drop_down),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
