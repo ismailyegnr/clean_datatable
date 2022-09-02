@@ -19,13 +19,18 @@ class ExpandableThemeData {
   final Color expandedBackgroundColor;
 
   /// Expansion border color.
+  ///
+  /// It overrides if rowsBorder is used.
   final Color? expandedBorderColor;
 
   //TODO
   final Color? rowsColor;
 
-  /// Border object of header.
+  /// Border style of header row.
   final BorderSide headerBorder;
+
+  /// Border style of all rows.
+  final BorderSide? rowsBorder;
 
   /// Icon showing editing feature.
   final Icon editIcon;
@@ -42,6 +47,7 @@ class ExpandableThemeData {
       width: 2.5,
       color: Color(0xffeeeeee),
     ),
+    this.rowsBorder,
     this.expandedBorderColor,
     this.rowsColor,
     this.expandedBackgroundColor = Colors.white,

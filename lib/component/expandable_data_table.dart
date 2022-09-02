@@ -294,23 +294,31 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
           _handleRowData(shownRowNames, rowData, shownCells, unshownBodyCells);
 
-          return Theme(
-            data: ThemeData().copyWith(
-              dividerColor: context.expandableTheme.expandedBorderColor,
-              expansionTileTheme: const ExpansionTileThemeData(),
+          return Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: context.expandableTheme.rowsBorder ?? BorderSide.none,
+              ),
             ),
-            child: custom_tile.ExpansionTile(
-              key: _keys != null ? _keys![index] : UniqueKey(),
-              showExpansionIcon: unshownBodyCells.isNotEmpty,
-              expansionIcon: context.expandableTheme.expansionIcon,
-              collapsedBackgroundColor: context.expandableTheme.rowsColor,
-              backgroundColor: context.expandableTheme.rowsColor,
-              trailingWidth: _trailingWidth,
-              secondTrailing: buildEditButton(context, index),
-              title: buildRowTitleContent(shownCells),
-              onExpansionChanged: (val) => _expandedChanged(val, index),
-              childrenPadding: EdgeInsets.symmetric(vertical: context.lowValue),
-              children: buildExpansionContent(context, unshownBodyCells),
+            child: Theme(
+              data: ThemeData().copyWith(
+                dividerColor: context.expandableTheme.expandedBorderColor,
+                expansionTileTheme: const ExpansionTileThemeData(),
+              ),
+              child: custom_tile.ExpansionTile(
+                key: _keys != null ? _keys![index] : UniqueKey(),
+                showExpansionIcon: unshownBodyCells.isNotEmpty,
+                expansionIcon: context.expandableTheme.expansionIcon,
+                collapsedBackgroundColor: context.expandableTheme.rowsColor,
+                backgroundColor: context.expandableTheme.rowsColor,
+                trailingWidth: _trailingWidth,
+                secondTrailing: buildEditButton(context, index),
+                title: buildRowTitleContent(shownCells),
+                onExpansionChanged: (val) => _expandedChanged(val, index),
+                childrenPadding:
+                    EdgeInsets.symmetric(vertical: context.lowValue),
+                children: buildExpansionContent(context, unshownBodyCells),
+              ),
             ),
           );
         },
