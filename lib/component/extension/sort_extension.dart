@@ -1,5 +1,6 @@
+import 'package:clear_datatable/component/extension/row_extension.dart';
+
 import '../model/sortable_row.dart';
-import 'row_extension.dart';
 
 extension ListSortExtension on List<SortableRow> {
   void get unsort => sort(
@@ -8,24 +9,24 @@ extension ListSortExtension on List<SortableRow> {
 
   void sortStringAscending(String columnTitle) {
     sort(
-      (a, b) => a.searchTitleValue(columnTitle).toLowerCase().compareTo(
-            b.searchTitleValue(columnTitle).toLowerCase(),
+      (a, b) => a.row.searchTitleValue(columnTitle).toLowerCase().compareTo(
+            b.row.searchTitleValue(columnTitle).toLowerCase(),
           ),
     );
   }
 
   void sortBoolAscending(String columnTitle) {
     sort(
-      (a, b) => a.searchTitleValue(columnTitle).toString().compareTo(
-            b.searchTitleValue(columnTitle).toString().toLowerCase(),
+      (a, b) => a.row.searchTitleValue(columnTitle).toString().compareTo(
+            b.row.searchTitleValue(columnTitle).toString().toLowerCase(),
           ),
     );
   }
 
   void sortNumAscending(String columnTitle) {
     sort(
-      (a, b) => a.searchTitleValue(columnTitle).compareTo(
-            b.searchTitleValue(columnTitle),
+      (a, b) => a.row.searchTitleValue(columnTitle).compareTo(
+            b.row.searchTitleValue(columnTitle),
           ),
     );
   }

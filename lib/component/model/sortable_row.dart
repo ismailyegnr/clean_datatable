@@ -1,7 +1,8 @@
 import 'expandable_row.dart';
 
-class SortableRow extends ExpandableRow {
+class SortableRow {
   final int index;
+  final ExpandableRow row;
 
-  SortableRow(this.index, {required super.cells});
+  SortableRow(this.index, {required this.row});
 }

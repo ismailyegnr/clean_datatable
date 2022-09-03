@@ -144,7 +144,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
         twoDimensionSortedRows.add([]);
       }
       twoDimensionSortedRows[_totalPageCount - 1].add(
-        isInitial ? SortableRow(i, cells: list[i].cells) : list[i],
+        isInitial ? SortableRow(i, row: list[i]) : list[i],
       );
     }
   }
@@ -286,7 +286,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
         itemBuilder: (context, index) {
           //gets current index value of sorted data list
           ExpandableRow rowData =
-              twoDimensionSortedRows[_page].elementAt(index);
+              twoDimensionSortedRows[_page].elementAt(index).row;
 
           List<CellItem> unshownBodyCells = [];
 
@@ -421,7 +421,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
         onSuccess: (newRow) {
           twoDimensionSortedRows[_page][rowInd] = newRow;
 
-          widget.onRowChanged(newRow);
+          widget.onRowChanged(newRow.row);
 
           setState(() {});
         },

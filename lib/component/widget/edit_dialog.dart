@@ -26,7 +26,7 @@ class _EditDialogState extends State<EditDialog> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  List<ExpandableCell<dynamic>> get rowCells => widget.row.cells;
+  List<ExpandableCell<dynamic>> get rowCells => widget.row.row.cells;
 
   @override
   void initState() {
@@ -94,7 +94,12 @@ class _EditDialogState extends State<EditDialog> {
         }
       }
 
-      SortableRow result = SortableRow(widget.row.index, cells: resultCellList);
+      SortableRow result = SortableRow(
+        widget.row.index,
+        row: ExpandableRow(
+          cells: resultCellList,
+        ),
+      );
 
       widget.onSuccess(result);
 
