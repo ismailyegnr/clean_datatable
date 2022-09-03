@@ -1,3 +1,4 @@
+import 'package:clear_datatable/component/utility/sort_operations.dart';
 import 'package:flutter/material.dart';
 
 import 'extension/context_extension.dart';
@@ -6,7 +7,7 @@ import 'model/cell_item.dart';
 import 'model/expandable_column.dart';
 import 'model/expandable_row.dart';
 import 'model/sortable_row.dart';
-import 'utility/expansion_tile.dart' as custom_tile;
+import 'widget/expansion_tile.dart' as custom_tile;
 import 'utility/sort_information.dart';
 import 'widget/edit_dialog.dart';
 import 'widget/page_selector.dart';
@@ -50,7 +51,7 @@ class ExpandableDataTable extends StatefulWidget {
   /// Triggers when a row is edited with [ExpandableEditDialog].
   ///
   /// Returns the new [ExpandableRow] data.`
-  final Function(ExpandableRow) onRowChanged;
+  final Function(ExpandableRow newRow) onRowChanged;
 
   /// This determines whether to enable the multi-extension feature.
   ///
@@ -98,23 +99,19 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
   int _totalPageCount = 0;
 
-  int _page = 0;
+  int _currentPage = 0;
 
-  final SortInformation _currentSort = SortInformation();
+  final SortOperations _sortOperations = SortOperations();
 
   List<ExpandableRow> get originalRows => widget.rows;
 
-  late int _pageSize;
-
-  late double _trailingWidth;
+  late double trailingWidth;
 
   @override
   void initState() {
     super.initState();
 
-    _pageSize = widget.pageSize;
-
-    _composeRowsList(originalRows, isInitial: true);
+    _composeRowsList(originalRows, isInit: true);
 
     if (!widget.enableMultiExpansion) {
       selectedRow = -1;
@@ -129,22 +126,23 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
   @override
   void didChangeDependencies() {
-    _trailingWidth = context.dynamicWidth(0.15);
+    trailingWidth = context.dynamicWidth(0.15);
 
     super.didChangeDependencies();
   }
 
-  void _composeRowsList(List<dynamic> list, {bool isInitial = false}) {
+  void _composeRowsList(List<dynamic> list, {bool isInit = false}) {
     _totalPageCount = 0;
     twoDimensionSortedRows = [];
 
     for (int i = 0; i < list.length; i++) {
-      if (i % _pageSize == 0) {
+      if (i % widget.pageSize == 0) {
         _totalPageCount++;
         twoDimensionSortedRows.add([]);
       }
+
       twoDimensionSortedRows[_totalPageCount - 1].add(
-        isInitial ? SortableRow(i, row: list[i]) : list[i],
+        isInit ? SortableRow(i, row: list[i]) : list[i],
       );
     }
   }
@@ -198,41 +196,11 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
   }
 
   void _sortAllRows(ExpandableColumn column) {
-    ///Pass the next sort
-    _currentSort.nextSort(column);
-
     ///Resets the page and go back to first page.
-    _page = 0;
+    _currentPage = 0;
 
-    List<SortableRow> tempSortArray = [];
-    for (int pageX = 0; pageX < twoDimensionSortedRows.length; pageX++) {
-      for (int rowY = 0; rowY < twoDimensionSortedRows[pageX].length; rowY++) {
-        tempSortArray.add(twoDimensionSortedRows[pageX][rowY]);
-      }
-    }
-
-    if (_currentSort.sortOption == SortOption.NORMAL) {
-      tempSortArray.unsort;
-
-      _composeRowsList(tempSortArray);
-
-      setState(() {});
-
-      return;
-    }
-
-    //This gives ascending solution.
-    if (column.type == String) {
-      tempSortArray.sortStringAscending(column.columnTitle);
-    } else if (column.type == bool) {
-      tempSortArray.sortBoolAscending(column.columnTitle);
-    } else {
-      tempSortArray.sortNumAscending(column.columnTitle);
-    }
-
-    if (_currentSort.sortOption == SortOption.DESC) {
-      tempSortArray = tempSortArray.reversed.toList();
-    }
+    List<SortableRow> tempSortArray =
+        _sortOperations.sortAllRows(column, twoDimensionSortedRows);
 
     _composeRowsList(tempSortArray);
 
@@ -247,7 +215,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
     }
 
     setState(() {
-      _page = newPage;
+      _currentPage = newPage;
     });
   }
 
@@ -262,7 +230,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
         Padding(
           padding: EdgeInsets.symmetric(vertical: context.lowValue),
           child: PageSelector(
-            currentPage: _page,
+            currentPage: _currentPage,
             totalPageCount: _totalPageCount,
             onPageChange: (value) => pageChanged(value),
           ),
@@ -281,12 +249,12 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
     return Scrollbar(
       child: ListView.builder(
         itemCount: twoDimensionSortedRows.isNotEmpty
-            ? twoDimensionSortedRows[_page].length
+            ? twoDimensionSortedRows[_currentPage].length
             : 0,
         itemBuilder: (context, index) {
           //gets current index value of sorted data list
           ExpandableRow rowData =
-              twoDimensionSortedRows[_page].elementAt(index).row;
+              twoDimensionSortedRows[_currentPage].elementAt(index).row;
 
           List<CellItem> unshownBodyCells = [];
 
@@ -310,7 +278,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
                 expansionIcon: context.expandableTheme.expansionIcon,
                 collapsedBackgroundColor: context.expandableTheme.rowsColor,
                 backgroundColor: context.expandableTheme.rowsColor,
-                trailingWidth: _trailingWidth,
+                trailingWidth: trailingWidth,
                 secondTrailing: buildEditButton(context, index),
                 title: buildRowTitleContent(shownCells),
                 onExpansionChanged: (val) => _expandedChanged(val, index),
@@ -332,9 +300,9 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
     return TableHeader(
       headerRow: headerRow,
-      currentSort: _currentSort,
+      currentSort: _sortOperations.sortInformation,
       onTitleTap: _sortAllRows,
-      trailingWidth: _trailingWidth,
+      trailingWidth: trailingWidth,
     );
   }
 
@@ -417,9 +385,9 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
     return showDialog(
       context: context,
       builder: (context) => EditDialog(
-        row: twoDimensionSortedRows[_page][rowInd],
+        row: twoDimensionSortedRows[_currentPage][rowInd],
         onSuccess: (newRow) {
-          twoDimensionSortedRows[_page][rowInd] = newRow;
+          twoDimensionSortedRows[_currentPage][rowInd] = newRow;
 
           widget.onRowChanged(newRow.row);
 

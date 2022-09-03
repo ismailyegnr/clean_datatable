@@ -101,7 +101,7 @@ class _HomeViewState extends State<HomeView> {
               child: ExpandableDataTable(
                 rows: rows,
                 headers: headers,
-                onRowChanged: (value) {},
+                onRowChanged: (newRow) {},
                 visibleColumnCount: 3,
               ),
             )
