@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 
-class PageSelector extends StatefulWidget {
+class PaginationWidget extends StatefulWidget {
   final int currentPage;
   final int totalPageCount;
-  final ValueChanged onPageChange;
+  final ValueChanged onChanged;
   final int maxVisiblePage;
 
-  const PageSelector({
+  const PaginationWidget({
     Key? key,
     required this.totalPageCount,
-    required this.onPageChange,
+    required this.onChanged,
     required this.currentPage,
     this.maxVisiblePage = 4,
   }) : super(key: key);
 
   @override
-  State<PageSelector> createState() => _PageSelectorState();
+  State<PaginationWidget> createState() => _PaginationWidgetState();
 }
 
-class _PageSelectorState extends State<PageSelector> {
+class _PaginationWidgetState extends State<PaginationWidget> {
   /// The state of each [ToggleButton] button is controlled by this list.
   List<bool> _toggleButtons = [];
 
@@ -28,7 +28,7 @@ class _PageSelectorState extends State<PageSelector> {
   late int _totalPageCount;
 
   @override
-  void didUpdateWidget(covariant PageSelector oldWidget) {
+  void didUpdateWidget(covariant PaginationWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.currentPage != oldWidget.currentPage) {
@@ -153,7 +153,7 @@ class _PageSelectorState extends State<PageSelector> {
         int newPage = _switchPage(index);
 
         if (newPage != oldPage) {
-          widget.onPageChange(newPage);
+          widget.onChanged(newPage);
         }
       },
       children: buildButtons(),

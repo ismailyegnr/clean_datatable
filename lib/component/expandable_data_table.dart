@@ -1,17 +1,17 @@
-import 'package:clear_datatable/component/utility/sort_operations.dart';
 import 'package:flutter/material.dart';
 
 import 'extension/context_extension.dart';
-import 'extension/sort_extension.dart';
 import 'model/cell_item.dart';
 import 'model/expandable_column.dart';
 import 'model/expandable_row.dart';
 import 'model/sortable_row.dart';
-import 'widget/expansion_tile.dart' as custom_tile;
-import 'utility/sort_information.dart';
+import 'utility/sort_operations.dart';
 import 'widget/edit_dialog.dart';
-import 'widget/page_selector.dart';
+import 'widget/expansion_container.dart';
+import 'widget/custom_expansion_tile.dart' as custom_tile;
+import 'widget/pagination_widget.dart';
 import 'widget/table_header.dart';
+import 'widget/title_container.dart';
 
 class ExpandableDataTable extends StatefulWidget {
   /// The data of rows
@@ -85,17 +85,17 @@ class ExpandableDataTable extends StatefulWidget {
 
 class _ExpandableDataTableState extends State<ExpandableDataTable> {
   List<GlobalKey<custom_tile.ExpansionTileState>>? _keys;
-  List<ExpandableColumn> headerRow = [];
+  List<ExpandableColumn> _headerTitles = [];
 
   /// Stores the sorted state data of the data table.
   ///
   /// This helps for building.
-  List<List<SortableRow>> twoDimensionSortedRows = [];
+  List<List<SortableRow>> _sortedRowsList = [];
 
   /// Indicates the index of the expanded single row in a page,
   ///
   /// This is only used if [enableMultiExpansion] is false.
-  int? selectedRow;
+  int? _expandedRowIndex;
 
   int _totalPageCount = 0;
 
@@ -103,18 +103,19 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
   final SortOperations _sortOperations = SortOperations();
 
-  List<ExpandableRow> get originalRows => widget.rows;
+  late double _trailingWidth;
 
-  late double trailingWidth;
+  int get pageLength =>
+      _sortedRowsList.isNotEmpty ? _sortedRowsList[_currentPage].length : 0;
 
   @override
   void initState() {
     super.initState();
 
-    _composeRowsList(originalRows, isInit: true);
+    _composeRowsList(widget.rows, isInit: true);
 
     if (!widget.enableMultiExpansion) {
-      selectedRow = -1;
+      _expandedRowIndex = -1;
 
       _keys = [];
 
@@ -126,66 +127,67 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
   @override
   void didChangeDependencies() {
-    trailingWidth = context.dynamicWidth(0.15);
+    _trailingWidth = context.dynamicWidth(0.15);
 
     super.didChangeDependencies();
   }
 
   void _composeRowsList(List<dynamic> list, {bool isInit = false}) {
     _totalPageCount = 0;
-    twoDimensionSortedRows = [];
+    _sortedRowsList = [];
 
     for (int i = 0; i < list.length; i++) {
       if (i % widget.pageSize == 0) {
         _totalPageCount++;
-        twoDimensionSortedRows.add([]);
+        _sortedRowsList.add([]);
       }
 
-      twoDimensionSortedRows[_totalPageCount - 1].add(
+      _sortedRowsList[_totalPageCount - 1].add(
         isInit ? SortableRow(i, row: list[i]) : list[i],
       );
     }
   }
 
-  void _expandedChanged(bool val, int index) {
+  void _onExpansionChange(bool val, int index) {
     if (widget.enableMultiExpansion == false) {
       if (val) {
-        if (selectedRow != -1) {
-          if (_keys![selectedRow!].currentState != null) {
-            _keys![selectedRow!].currentState!.handleTap();
+        if (_expandedRowIndex != -1) {
+          if (_keys![_expandedRowIndex!].currentState != null) {
+            _keys![_expandedRowIndex!].currentState!.handleTap();
           }
         }
-        selectedRow = index;
+        _expandedRowIndex = index;
         setState(() {});
       } else {
         setState(() {
-          selectedRow = -1;
+          _expandedRowIndex = -1;
         });
       }
     }
   }
 
-  /// Handles the row data by, loading shownCells and unshownBodyCells lists for
+  /// Handles the row data by, loading titleCells and expansionCells lists for
   /// expansion tiles.
-  void _handleRowData(
-    List<String> shownRowNames,
+  void _createRowCells(
+    List<String> headerNames,
     ExpandableRow rowData,
-    List<CellItem> shownCells,
-    List<CellItem> unshownBodyCells,
+    List<CellItem> titleCells,
+    List<CellItem> expansionCells,
   ) {
     for (var element in rowData.cells) {
-      if (shownRowNames.contains(element.columnTitle)) {
-        int headerInd = headerRow
+      if (headerNames.contains(element.columnTitle)) {
+        int headerInd = _headerTitles
             .indexWhere((val) => val.columnTitle == element.columnTitle);
 
-        shownCells.add(
+        titleCells.add(
           CellItem(
-              columnName: element.columnTitle,
-              value: element.value,
-              flex: headerRow[headerInd].columnFlex),
+            columnName: element.columnTitle,
+            value: element.value,
+            flex: _headerTitles[headerInd].columnFlex,
+          ),
         );
       } else {
-        unshownBodyCells.add(
+        expansionCells.add(
           CellItem(
             columnName: element.columnTitle,
             value: element.value,
@@ -195,23 +197,23 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
     }
   }
 
-  void _sortAllRows(ExpandableColumn column) {
+  void _sortRows(ExpandableColumn column) {
     ///Resets the page and go back to first page.
     _currentPage = 0;
 
     List<SortableRow> tempSortArray =
-        _sortOperations.sortAllRows(column, twoDimensionSortedRows);
+        _sortOperations.sortAllRows(column, _sortedRowsList);
 
     _composeRowsList(tempSortArray);
 
     setState(() {});
   }
 
-  void pageChanged(int newPage) {
+  void _changePage(int newPage) {
     /// Close expanded rows while page is changing.
-    if (_keys != null && selectedRow != -1) {
-      _keys![selectedRow!].currentState?.handleTap();
-      selectedRow = -1;
+    if (_keys != null && _expandedRowIndex != -1) {
+      _keys![_expandedRowIndex!].currentState?.handleTap();
+      _expandedRowIndex = -1;
     }
 
     setState(() {
@@ -229,10 +231,10 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
         ),
         Padding(
           padding: EdgeInsets.symmetric(vertical: context.lowValue),
-          child: PageSelector(
+          child: PaginationWidget(
             currentPage: _currentPage,
             totalPageCount: _totalPageCount,
-            onPageChange: (value) => pageChanged(value),
+            onChanged: (value) => _changePage(value),
           ),
         )
       ],
@@ -240,154 +242,114 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
   }
 
   Widget buildRows() {
-    List<String> shownRowNames = [];
+    List<String> headerNames = [];
 
-    for (var element in headerRow) {
-      shownRowNames.add(element.columnTitle);
+    for (var element in _headerTitles) {
+      headerNames.add(element.columnTitle);
     }
 
     return Scrollbar(
       child: ListView.builder(
-        itemCount: twoDimensionSortedRows.isNotEmpty
-            ? twoDimensionSortedRows[_currentPage].length
-            : 0,
+        itemCount: pageLength,
         itemBuilder: (context, index) {
           //gets current index value of sorted data list
           ExpandableRow rowData =
-              twoDimensionSortedRows[_currentPage].elementAt(index).row;
+              _sortedRowsList[_currentPage].elementAt(index).row;
 
-          List<CellItem> unshownBodyCells = [];
+          List<CellItem> expansionCells = [];
+          List<CellItem> titleCells = [];
 
-          List<CellItem> shownCells = [];
+          _createRowCells(headerNames, rowData, titleCells, expansionCells);
 
-          _handleRowData(shownRowNames, rowData, shownCells, unshownBodyCells);
-
-          return Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: context.expandableTheme.rowsBorder,
-              ),
-            ),
-            child: Theme(
-              data: ThemeData().copyWith(
-                dividerColor: context.expandableTheme.expandedBorderColor,
-              ),
-              child: custom_tile.ExpansionTile(
-                key: _keys != null ? _keys![index] : UniqueKey(),
-                showExpansionIcon: unshownBodyCells.isNotEmpty,
-                expansionIcon: context.expandableTheme.expansionIcon,
-                collapsedBackgroundColor: context.expandableTheme.rowsColor,
-                backgroundColor: context.expandableTheme.rowsColor,
-                trailingWidth: trailingWidth,
-                secondTrailing: buildEditButton(context, index),
-                title: buildRowTitleContent(shownCells),
-                onExpansionChanged: (val) => _expandedChanged(val, index),
-                childrenPadding:
-                    EdgeInsets.symmetric(vertical: context.lowValue),
-                children: buildExpansionContent(context, unshownBodyCells),
-              ),
-            ),
-          );
+          return buildSingleRow(context, index, expansionCells, titleCells);
         },
+      ),
+    );
+  }
+
+  Container buildSingleRow(
+    BuildContext context,
+    int index,
+    List<CellItem> expansionCells,
+    List<CellItem> titleCells,
+  ) {
+    var boxDecoration = BoxDecoration(
+      border: Border(
+        bottom: context.expandableTheme.rowsBorder,
+      ),
+    );
+
+    return Container(
+      decoration: boxDecoration,
+      child: Theme(
+        data: ThemeData().copyWith(
+          dividerColor: context.expandableTheme.expandedBorderColor,
+        ),
+        child: custom_tile.ExpansionTile(
+          key: _keys != null ? _keys![index] : UniqueKey(),
+          showExpansionIcon: expansionCells.isNotEmpty,
+          expansionIcon: context.expandableTheme.expansionIcon,
+          collapsedBackgroundColor: context.expandableTheme.rowsColor,
+          backgroundColor: context.expandableTheme.rowsColor,
+          trailingWidth: _trailingWidth,
+          secondTrailing: buildEditIcon(context, index),
+          title: buildRowTitleContent(titleCells),
+          onExpansionChanged: (val) => _onExpansionChange(val, index),
+          childrenPadding: EdgeInsets.symmetric(vertical: context.lowValue),
+          children: buildExpansionContent(context, expansionCells),
+        ),
       ),
     );
   }
 
   Widget buildHeader() {
     if (widget.headers.isNotEmpty) {
-      headerRow = widget.headers.sublist(0, widget.visibleColumnCount);
+      _headerTitles = widget.headers.sublist(0, widget.visibleColumnCount);
     }
 
     return TableHeader(
-      headerRow: headerRow,
+      headerRow: _headerTitles,
       currentSort: _sortOperations.sortInformation,
-      onTitleTap: _sortAllRows,
-      trailingWidth: trailingWidth,
+      onTitleTap: _sortRows,
+      trailingWidth: _trailingWidth,
     );
   }
 
-  Widget buildRowTitleContent(List<CellItem> shownCells) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: context.lowValue),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: shownCells
-            .map(
-              (e) => Expanded(
-                flex: e.flex!,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    right: context.dynamicWidth(0.02),
-                  ),
-                  child: Text(
-                    e.value.toString(),
-                    style: context.expandableTheme.rowsTextStyle,
-                  ),
-                ),
-              ),
-            )
-            .toList(),
-      ),
+  Widget buildRowTitleContent(List<CellItem> titleCells) {
+    return TitleContainer(
+      titleCells: titleCells,
     );
   }
 
   List<Widget> buildExpansionContent(
     BuildContext context,
-    List<CellItem> unshownBodyCells,
+    List<CellItem> expansionCells,
   ) {
-    if (unshownBodyCells.isEmpty) {
+    if (expansionCells.isEmpty) {
       return [];
     }
 
-    return unshownBodyCells.map(
-      (e) {
-        return Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: context.normalValue,
-            vertical: context.lowValue,
-          ),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    "${e.columnName}:",
-                    style: context.expandableTheme.expandedTextStyle,
-                  ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: Text(
-                    "${e.value}",
-                    style: context.expandableTheme.expandedTextStyle,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    ).toList();
+    return [
+      ExpansionContainer(expansionCells: expansionCells),
+    ];
   }
 
-  Widget buildEditButton(BuildContext context, int rowInd) {
+  Widget buildEditIcon(BuildContext context, int rowInd) {
     return IconButton(
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(),
       icon: context.expandableTheme.editIcon,
-      onPressed: () => buildShowDialog(context, rowInd),
+      onPressed: () => showEditDialog(context, rowInd),
     );
   }
 
-  Future<dynamic> buildShowDialog(BuildContext context, int rowInd) {
+  Future<dynamic> showEditDialog(BuildContext context, int rowInd) {
     return showDialog(
       context: context,
       builder: (context) => EditDialog(
-        row: twoDimensionSortedRows[_currentPage][rowInd],
+        row: _sortedRowsList[_currentPage][rowInd],
         onSuccess: (newRow) {
-          twoDimensionSortedRows[_currentPage][rowInd] = newRow;
+          _sortedRowsList[_currentPage][rowInd] = newRow;
 
           widget.onRowChanged(newRow.row);
 
