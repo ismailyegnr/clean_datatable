@@ -5,11 +5,10 @@ import '../constants/constants.dart';
 import '../exception/no_support_exception.dart';
 import '../extension/string_extension.dart';
 import '../model/expandable_row.dart';
-import '../model/sortable_row.dart';
 
 class EditDialog extends StatefulWidget {
-  final SortableRow row;
-  final Function(SortableRow) onSuccess;
+  final ExpandableRow row;
+  final Function(ExpandableRow newRow) onSuccess;
 
   const EditDialog({
     Key? key,
@@ -26,7 +25,7 @@ class _EditDialogState extends State<EditDialog> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  List<ExpandableCell<dynamic>> get rowCells => widget.row.row.cells;
+  List<ExpandableCell<dynamic>> get rowCells => widget.row.cells;
 
   @override
   void initState() {
@@ -36,7 +35,13 @@ class _EditDialogState extends State<EditDialog> {
       controllers.add(TextEditingController());
     }
 
-    _updateTextFieldContext(widget.row);
+    _initTextFields();
+  }
+
+  void _initTextFields() {
+    for (int i = 0; i < rowCells.length; i++) {
+      controllers[i].text = rowCells[i].value.toString();
+    }
   }
 
   @override
@@ -46,12 +51,6 @@ class _EditDialogState extends State<EditDialog> {
     }
 
     super.dispose();
-  }
-
-  void _updateTextFieldContext(SortableRow row) {
-    for (int i = 0; i < rowCells.length; i++) {
-      controllers[i].text = rowCells[i].value.toString();
-    }
   }
 
   void _processCellUpdate() {
@@ -94,11 +93,8 @@ class _EditDialogState extends State<EditDialog> {
         }
       }
 
-      SortableRow result = SortableRow(
-        widget.row.index,
-        row: ExpandableRow(
-          cells: resultCellList,
-        ),
+      ExpandableRow result = ExpandableRow(
+        cells: resultCellList,
       );
 
       widget.onSuccess(result);

@@ -6,9 +6,9 @@ import 'model/expandable_column.dart';
 import 'model/expandable_row.dart';
 import 'model/sortable_row.dart';
 import 'utility/sort_operations.dart';
+import 'widget/custom_expansion_tile.dart' as custom_tile;
 import 'widget/edit_dialog.dart';
 import 'widget/expansion_container.dart';
-import 'widget/custom_expansion_tile.dart' as custom_tile;
 import 'widget/pagination_widget.dart';
 import 'widget/table_header.dart';
 import 'widget/title_container.dart';
@@ -65,6 +65,17 @@ class ExpandableDataTable extends StatefulWidget {
   /// It defaults to 10.
   final int pageSize;
 
+  /// Renders a custom edit dialog widget with two parameters.
+  ///
+  /// First parameter, row, gives the current selected row information.
+  ///
+  /// Second parameter, onSuccess, is a function and it must return a new
+  /// [ExpandableRow] variable to update the value of the row inside the widget.
+  final Widget Function(
+    ExpandableRow row,
+    Function(ExpandableRow newRow) onSuccess,
+  )? editDialog;
+
   ExpandableDataTable({
     Key? key,
     required this.rows,
@@ -73,6 +84,7 @@ class ExpandableDataTable extends StatefulWidget {
     required this.visibleColumnCount,
     this.enableMultiExpansion = true,
     this.pageSize = 10,
+    this.editDialog,
   })  : assert(visibleColumnCount > 0),
         assert(
           rows.isNotEmpty ? headers.length == rows.first.cells.length : true,
@@ -132,6 +144,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
     super.didChangeDependencies();
   }
 
+  /// Create or update two dimension sorted rows list
   void _composeRowsList(List<dynamic> list, {bool isInit = false}) {
     _totalPageCount = 0;
     _sortedRowsList = [];
@@ -197,6 +210,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
     }
   }
 
+  /// Sort all rows.
   void _sortRows(ExpandableColumn column) {
     ///Resets the page and go back to first page.
     _currentPage = 0;
@@ -209,8 +223,8 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
     setState(() {});
   }
 
+  /// Close expanded rows while page is changing.
   void _changePage(int newPage) {
-    /// Close expanded rows while page is changing.
     if (_keys != null && _expandedRowIndex != -1) {
       _keys![_expandedRowIndex!].currentState?.handleTap();
       _expandedRowIndex = -1;
@@ -219,6 +233,15 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
     setState(() {
       _currentPage = newPage;
     });
+  }
+
+  /// Change a row after the row is edited with an edit dialog.
+  void _updateRow(ExpandableRow newRow, int rowInd) {
+    _sortedRowsList[_currentPage][rowInd].row = newRow;
+
+    widget.onRowChanged(newRow);
+
+    setState(() {});
   }
 
   @override
@@ -346,16 +369,15 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
   Future<dynamic> showEditDialog(BuildContext context, int rowInd) {
     return showDialog(
       context: context,
-      builder: (context) => EditDialog(
-        row: _sortedRowsList[_currentPage][rowInd],
-        onSuccess: (newRow) {
-          _sortedRowsList[_currentPage][rowInd] = newRow;
-
-          widget.onRowChanged(newRow.row);
-
-          setState(() {});
-        },
-      ),
+      builder: (context) => widget.editDialog != null
+          ? widget.editDialog!(
+              _sortedRowsList[_currentPage][rowInd].row,
+              (newRow) => _updateRow(newRow, rowInd),
+            )
+          : EditDialog(
+              row: _sortedRowsList[_currentPage][rowInd].row,
+              onSuccess: (newRow) => _updateRow(newRow, rowInd),
+            ),
     );
   }
 }

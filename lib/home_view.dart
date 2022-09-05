@@ -101,11 +101,31 @@ class _HomeViewState extends State<HomeView> {
               child: ExpandableDataTable(
                 rows: rows,
                 headers: headers,
-                onRowChanged: (newRow) {},
+                onRowChanged: (newRow) {
+                  print(newRow.cells[01].value);
+                },
                 visibleColumnCount: 3,
+                editDialog: (row, onSuccess) =>
+                    _buildEditDialog(row, onSuccess),
               ),
             )
           : const Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  Widget _buildEditDialog(
+      ExpandableRow row, Function(ExpandableRow) onSuccess) {
+    return AlertDialog(
+      title: Container(
+        height: 300,
+        child: TextButton(
+          child: Text("bas"),
+          onPressed: () {
+            row.cells[1].value = "x3";
+            onSuccess(row);
+          },
+        ),
+      ),
     );
   }
 }

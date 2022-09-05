@@ -8,7 +8,7 @@ class ExpandableRow {
 }
 
 class ExpandableCell<T> {
-  String columnTitle;
+  final String columnTitle;
   T? value;
 
   ExpandableCell({
