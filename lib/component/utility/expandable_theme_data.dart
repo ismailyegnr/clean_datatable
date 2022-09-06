@@ -35,10 +35,28 @@ class ExpandableThemeData {
   /// Icon that expands the expansion content.
   final Icon expansionIcon;
 
+  /*************** Pagination Widget Theme Properties *******************/
+  /// If the custom pagination widget is not used. These properties
+  /// are used to customize default pagination widget.
+
   /// Size of the default pagination widget.
   ///
   /// If this property is null, then paginationSize 48 is be used.
   final double paginationSize;
+
+  final TextStyle? paginationTextStyle;
+
+  final Color? paginationSelectedTextColor;
+
+  final Color? paginationUnselectedTextColor;
+
+  final Color? paginationSelectedFillColor;
+
+  final Color? paginationBorderColor;
+
+  final BorderRadius? paginationBorderRadius;
+
+  final double? paginationBorderWidth;
 
   factory ExpandableThemeData(
     BuildContext context, {
@@ -54,6 +72,13 @@ class ExpandableThemeData {
     Icon? editIcon,
     Icon? expansionIcon,
     double? paginationSize,
+    TextStyle? paginationTextStyle,
+    Color? paginationSelectedTextColor,
+    Color? paginationUnselectedTextColor,
+    Color? paginationSelectedFillColor,
+    Color? paginationBorderColor,
+    BorderRadius? paginationBorderRadius,
+    double? paginationBorderWidth,
   }) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -95,6 +120,13 @@ class ExpandableThemeData {
       editIcon: editIcon,
       expansionIcon: expansionIcon,
       paginationSize: paginationSize,
+      paginationTextStyle: paginationTextStyle,
+      paginationSelectedTextColor: paginationSelectedTextColor,
+      paginationUnselectedTextColor: paginationUnselectedTextColor,
+      paginationSelectedFillColor: paginationSelectedFillColor,
+      paginationBorderColor: paginationBorderColor,
+      paginationBorderRadius: paginationBorderRadius,
+      paginationBorderWidth: paginationBorderWidth,
     );
   }
 
@@ -110,6 +142,13 @@ class ExpandableThemeData {
     required this.editIcon,
     required this.expansionIcon,
     required this.paginationSize,
+    this.paginationTextStyle,
+    this.paginationSelectedTextColor,
+    this.paginationUnselectedTextColor,
+    this.paginationSelectedFillColor,
+    this.paginationBorderColor,
+    this.paginationBorderRadius,
+    this.paginationBorderWidth,
   });
 
   factory ExpandableThemeData.normal(BuildContext context) =>

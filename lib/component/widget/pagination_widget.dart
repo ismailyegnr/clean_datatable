@@ -1,5 +1,8 @@
+import 'package:clear_datatable/component/expandable_data_table.dart';
 import 'package:clear_datatable/component/extension/context_extension.dart';
 import 'package:flutter/material.dart';
+
+import '../utility/expandable_theme_data.dart';
 
 class PaginationWidget extends StatefulWidget {
   final int currentPage;
@@ -146,10 +149,19 @@ class _PaginationWidgetState extends State<PaginationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final double size = context.expandableTheme.paginationSize;
+    final ExpandableThemeData theme = context.expandableTheme;
+    final double size = theme.paginationSize;
 
     return ToggleButtons(
       constraints: BoxConstraints(minHeight: size, minWidth: size),
+      textStyle: theme.paginationTextStyle,
+      selectedColor: theme.paginationSelectedTextColor,
+      color: theme.paginationUnselectedTextColor,
+      fillColor: theme.paginationSelectedFillColor,
+      borderColor: theme.paginationBorderColor,
+      borderRadius: theme.paginationBorderRadius,
+      borderWidth: theme.paginationBorderWidth,
+      selectedBorderColor: theme.paginationBorderColor,
       isSelected: _toggleButtons,
       onPressed: (int index) {
         int oldPage = widget.currentPage;
