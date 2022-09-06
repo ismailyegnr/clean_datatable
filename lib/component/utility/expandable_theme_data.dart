@@ -35,6 +35,11 @@ class ExpandableThemeData {
   /// Icon that expands the expansion content.
   final Icon expansionIcon;
 
+  /// Size of the default pagination widget.
+  ///
+  /// If this property is null, then paginationSize 48 is be used.
+  final double paginationSize;
+
   factory ExpandableThemeData(
     BuildContext context, {
     TextStyle? headerTextStyle,
@@ -48,6 +53,7 @@ class ExpandableThemeData {
     BorderSide? rowsBorder,
     Icon? editIcon,
     Icon? expansionIcon,
+    double? paginationSize,
   }) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -75,6 +81,7 @@ class ExpandableThemeData {
       color: theme.unselectedWidgetColor,
       size: 18,
     );
+    paginationSize ??= 48;
 
     return ExpandableThemeData.raw(
       headerTextStyle: headerTextStyle,
@@ -87,6 +94,7 @@ class ExpandableThemeData {
       rowsBorder: rowsBorder,
       editIcon: editIcon,
       expansionIcon: expansionIcon,
+      paginationSize: paginationSize,
     );
   }
 
@@ -101,6 +109,7 @@ class ExpandableThemeData {
     required this.rowsBorder,
     required this.editIcon,
     required this.expansionIcon,
+    required this.paginationSize,
   });
 
   factory ExpandableThemeData.normal(BuildContext context) =>
