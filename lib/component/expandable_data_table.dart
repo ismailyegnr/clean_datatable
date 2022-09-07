@@ -51,7 +51,7 @@ class ExpandableDataTable extends StatefulWidget {
   /// Triggers when a row is edited with [ExpandableEditDialog].
   ///
   /// Returns the new [ExpandableRow] data.`
-  final Function(ExpandableRow newRow) onRowChanged;
+  final void Function(ExpandableRow newRow)? onRowChanged;
 
   /// This determines whether to enable the multi-extension feature.
   ///
@@ -73,15 +73,15 @@ class ExpandableDataTable extends StatefulWidget {
   /// [ExpandableRow] variable to update the value of the row inside the widget.
   final Widget Function(
     ExpandableRow row,
-    Function(ExpandableRow newRow) onSuccess,
+    void Function(ExpandableRow newRow) onSuccess,
   )? editDialog;
 
   ExpandableDataTable({
     Key? key,
     required this.rows,
     required this.headers,
-    required this.onRowChanged,
     required this.visibleColumnCount,
+    this.onRowChanged,
     this.enableMultiExpansion = true,
     this.pageSize = 10,
     this.editDialog,
@@ -239,7 +239,9 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
   void _updateRow(ExpandableRow newRow, int rowInd) {
     _sortedRowsList[_currentPage][rowInd].row = newRow;
 
-    widget.onRowChanged(newRow);
+    if (widget.onRowChanged != null) {
+      widget.onRowChanged!(newRow);
+    }
 
     setState(() {});
   }
