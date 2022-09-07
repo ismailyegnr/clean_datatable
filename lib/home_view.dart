@@ -111,6 +111,23 @@ class _HomeViewState extends State<HomeView> {
                 visibleColumnCount: 3,
                 editDialog: (row, onSuccess) =>
                     _buildEditDialog(row, onSuccess),
+                customPagination: ((count, page, onChange) {
+                  return Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text("$count"),
+                        Text("$page"),
+                        TextButton(
+                          onPressed: () {
+                            onChange(page + 1);
+                          },
+                          child: Text("bas"),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
               ),
             )
           : const Center(child: CircularProgressIndicator()),

@@ -80,6 +80,12 @@ class ExpandableDataTable extends StatefulWidget {
     void Function(ExpandableRow newRow) onSuccess,
   )? editDialog;
 
+  final Widget Function(
+    int count,
+    int page,
+    void Function(int page) onChange,
+  )? customPagination;
+
   ExpandableDataTable({
     Key? key,
     required this.rows,
@@ -90,6 +96,7 @@ class ExpandableDataTable extends StatefulWidget {
     this.pageSize = 10,
     this.editDialog,
     this.onPageChanged,
+    this.customPagination,
   })  : assert(visibleColumnCount > 0),
         assert(
           rows.isNotEmpty ? headers.length == rows.first.cells.length : true,
@@ -263,16 +270,26 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
         Expanded(
           child: buildRows(),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: context.lowValue),
-          child: PaginationWidget(
-            currentPage: _currentPage,
-            totalPageCount: _totalPageCount,
-            onChanged: (value) => _changePage(value),
-          ),
-        )
+        buildPagination(context)
       ],
     );
+  }
+
+  Widget buildPagination(BuildContext context) {
+    return widget.customPagination != null
+        ? widget.customPagination!(
+            _totalPageCount,
+            _currentPage,
+            (value) => _changePage(value),
+          )
+        : Padding(
+            padding: EdgeInsets.symmetric(vertical: context.lowValue),
+            child: PaginationWidget(
+              currentPage: _currentPage,
+              totalPageCount: _totalPageCount,
+              onChanged: (value) => _changePage(value),
+            ),
+          );
   }
 
   Widget buildRows() {
