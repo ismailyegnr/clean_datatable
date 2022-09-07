@@ -105,6 +105,9 @@ class _HomeViewState extends State<HomeView> {
                 onRowChanged: (newRow) {
                   print(newRow.cells[01].value);
                 },
+                onPageChanged: (page) {
+                  print(page);
+                },
                 visibleColumnCount: 3,
                 editDialog: (row, onSuccess) =>
                     _buildEditDialog(row, onSuccess),

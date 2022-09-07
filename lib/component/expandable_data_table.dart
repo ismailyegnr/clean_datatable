@@ -53,6 +53,10 @@ class ExpandableDataTable extends StatefulWidget {
   /// Returns the new [ExpandableRow] data.`
   final void Function(ExpandableRow newRow)? onRowChanged;
 
+  /// When the current page is changed, this returns the new page value.
+  ///
+  final void Function(int page)? onPageChanged;
+
   /// This determines whether to enable the multi-extension feature.
   ///
   /// Default value is [true].
@@ -85,6 +89,7 @@ class ExpandableDataTable extends StatefulWidget {
     this.enableMultiExpansion = true,
     this.pageSize = 10,
     this.editDialog,
+    this.onPageChanged,
   })  : assert(visibleColumnCount > 0),
         assert(
           rows.isNotEmpty ? headers.length == rows.first.cells.length : true,
@@ -228,6 +233,10 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
     if (_keys != null && _expandedRowIndex != -1) {
       _keys![_expandedRowIndex!].currentState?.handleTap();
       _expandedRowIndex = -1;
+    }
+
+    if (widget.onPageChanged != null) {
+      widget.onPageChanged!(newPage);
     }
 
     setState(() {
