@@ -95,7 +95,7 @@ class _HomeViewState extends State<HomeView> {
           ? ExpandableTheme(
               data: ExpandableThemeData(
                 context,
-                rowsBorder: BorderSide(color: Colors.amber),
+                rowsBorder: const BorderSide(color: Colors.amber),
                 expandedBorderColor: Colors.transparent,
                 paginationSize: 48,
               ),
@@ -111,23 +111,6 @@ class _HomeViewState extends State<HomeView> {
                 visibleColumnCount: 3,
                 editDialog: (row, onSuccess) =>
                     _buildEditDialog(row, onSuccess),
-                customPagination: ((count, page, onChange) {
-                  return Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text("$count"),
-                        Text("$page"),
-                        TextButton(
-                          onPressed: () {
-                            onChange(page + 1);
-                          },
-                          child: Text("bas"),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
               ),
             )
           : const Center(child: CircularProgressIndicator()),
@@ -137,10 +120,10 @@ class _HomeViewState extends State<HomeView> {
   Widget _buildEditDialog(
       ExpandableRow row, Function(ExpandableRow) onSuccess) {
     return AlertDialog(
-      title: Container(
+      title: SizedBox(
         height: 300,
         child: TextButton(
-          child: Text("bas"),
+          child: const Text("bas"),
           onPressed: () {
             row.cells[1].value = "x3";
             onSuccess(row);

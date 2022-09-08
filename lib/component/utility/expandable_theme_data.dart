@@ -7,6 +7,15 @@ class ExpandableThemeData {
   /// Text style of all rows.
   final TextStyle rowsTextStyle;
 
+  /// Maximum number of lines for the text to span.
+  ///
+  /// If the text exceeds the given number of lines. It will be truncated according
+  /// to [rowsTextOverflow].
+  final int rowsTextMaxLines;
+
+  /// Visual overflow of the row's cell text.
+  final TextOverflow rowsTextOverflow;
+
   /// Text style of expansion content.
   ///
   /// It overrides if custom render function is used.
@@ -62,6 +71,8 @@ class ExpandableThemeData {
     BuildContext context, {
     TextStyle? headerTextStyle,
     TextStyle? rowsTextStyle,
+    int? rowsTextMaxLines,
+    TextOverflow? rowsTextOverflow,
     TextStyle? expandedTextStyle,
     Color? headerColor,
     Color? expandedBackgroundColor,
@@ -87,6 +98,8 @@ class ExpandableThemeData {
 
     headerTextStyle ??= theme.textTheme.bodyText1 ?? fixText;
     rowsTextStyle ??= theme.textTheme.bodyText2 ?? fixText;
+    rowsTextMaxLines ??= 3;
+    rowsTextOverflow ??= TextOverflow.ellipsis;
     expandedTextStyle ??= theme.textTheme.bodyText2 ?? fixText;
     headerColor ??= theme.scaffoldBackgroundColor;
     expandedBorderColor ??= colorScheme.onBackground;
@@ -111,6 +124,8 @@ class ExpandableThemeData {
     return ExpandableThemeData.raw(
       headerTextStyle: headerTextStyle,
       rowsTextStyle: rowsTextStyle,
+      rowsTextMaxLines: rowsTextMaxLines,
+      rowsTextOverflow: rowsTextOverflow,
       expandedTextStyle: expandedTextStyle,
       headerColor: headerColor,
       expandedBorderColor: expandedBorderColor,
@@ -133,6 +148,8 @@ class ExpandableThemeData {
   const ExpandableThemeData.raw({
     required this.headerTextStyle,
     required this.rowsTextStyle,
+    required this.rowsTextMaxLines,
+    required this.rowsTextOverflow,
     required this.expandedTextStyle,
     required this.headerColor,
     required this.expandedBorderColor,
