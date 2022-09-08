@@ -59,9 +59,13 @@ class TableHeader extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: context.lowValue),
           child: Row(
             children: [
-              Text(
-                column.columnTitle,
-                style: context.expandableTheme.headerTextStyle,
+              Flexible(
+                child: Text(
+                  column.columnTitle,
+                  style: context.expandableTheme.headerTextStyle,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
               Visibility(
                 visible: currentSort.sortedColumn != null &&
