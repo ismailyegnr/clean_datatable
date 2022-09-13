@@ -75,24 +75,81 @@ class ExpandableDataTable extends StatefulWidget {
   ///
   /// Second parameter, onSuccess, is a function and it must return a new
   /// [ExpandableRow] variable to update the value of the row inside the widget.
+  ///
+  /// ```dart
+  /// renderEditDialog: (row, onSuccess) {
+  ///   return AlertDialog(
+  ///     title: SizedBox(
+  ///       height: 300,
+  ///       child: TextButton(
+  ///         child: const Text("Change Row"),
+  ///         onPressed: () {
+  ///           row.cells[1].value = "New Value";
+  ///           onSuccess(row);
+  ///          },
+  ///       ),
+  ///     ),
+  ///   );
+  /// }
+  ///```
   final Widget Function(
     ExpandableRow row,
     void Function(ExpandableRow newRow) onSuccess,
-  )? editDialog;
+  )? renderEditDialog;
 
+  /// Renders a custom pagination widget with three parameters.
+  ///
+  /// First parameter, count, returns the total page count of the datatable.
+  ///
+  /// Second parameter, page, returns the current page value.
+  ///
+  /// Last parameter, onChange, is a function and it must return a new
+  /// integer page variable to update the value of the current page.
+  /// ```dart
+  /// renderCustomPagination: (count, page, onChange) {
+  ///   return Row(
+  ///     mainAxisAlignment: MainAxisAlignment.spaceAround,
+  ///     children: [
+  ///       TextButton(
+  ///         onPressed: () {
+  ///           if (page > 0) {
+  ///             onChange(page - 1);
+  ///           }
+  ///         },
+  ///         child: const Text("Previous"),
+  ///       ),
+  ///       Text("Total: $count"),
+  ///       Text("Current index: $page"),
+  ///       TextButton(
+  ///         onPressed: () {
+  ///           if (page < count - 1) {
+  ///             onChange(page + 1);
+  ///           }
+  ///         },
+  ///         child: const Text("Next"),
+  ///       ),
+  ///     ],
+  ///   );
+  /// }
+  /// ```
   final Widget Function(
     int count,
     int page,
     void Function(int page) onChange,
-  )? customPagination;
+  )? renderCustomPagination;
 
+  /// Renders a custom expansion content widget.
+  ///
+  /// This gives the all row information with row parameter, and it expects a
+  /// widget.
+  /// ```dart
+  /// renderExpansionContent: (row) {
+  ///   return Text(row.cells[0].columnTitle);
+  /// }
+  /// ```
   final Widget Function(
     ExpandableRow row,
-  )? expansionContent;
-
-  // renderEditDialog
-  // renderCustomPagination
-  // renderExpansionContent
+  )? renderExpansionContent;
 
   ExpandableDataTable({
     Key? key,
@@ -102,10 +159,10 @@ class ExpandableDataTable extends StatefulWidget {
     this.onRowChanged,
     this.enableMultiExpansion = true,
     this.pageSize = 10,
-    this.editDialog,
     this.onPageChanged,
-    this.customPagination,
-    this.expansionContent,
+    this.renderEditDialog,
+    this.renderCustomPagination,
+    this.renderExpansionContent,
   })  : assert(visibleColumnCount > 0),
         assert(
           rows.isNotEmpty ? headers.length == rows.first.cells.length : true,
@@ -285,8 +342,8 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
   }
 
   Widget buildPagination(BuildContext context) {
-    return widget.customPagination != null
-        ? widget.customPagination!(
+    return widget.renderCustomPagination != null
+        ? widget.renderCustomPagination!(
             _totalPageCount,
             _currentPage,
             (value) => _changePage(value),
@@ -390,9 +447,9 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
   ) {
     if (expansionCells.isEmpty) {
       return [];
-    } else if (widget.expansionContent != null) {
+    } else if (widget.renderExpansionContent != null) {
       return [
-        widget.expansionContent!(row),
+        widget.renderExpansionContent!(row),
       ];
     }
 
@@ -413,8 +470,8 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
   Future<dynamic> showEditDialog(BuildContext context, int rowInd) {
     return showDialog(
       context: context,
-      builder: (context) => widget.editDialog != null
-          ? widget.editDialog!(
+      builder: (context) => widget.renderEditDialog != null
+          ? widget.renderEditDialog!(
               _sortedRowsList[_currentPage][rowInd].row,
               (newRow) => _updateRow(newRow, rowInd),
             )
