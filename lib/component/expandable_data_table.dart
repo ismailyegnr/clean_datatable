@@ -86,6 +86,14 @@ class ExpandableDataTable extends StatefulWidget {
     void Function(int page) onChange,
   )? customPagination;
 
+  final Widget Function(
+    ExpandableRow row,
+  )? expansionContent;
+
+  // renderEditDialog
+  // renderCustomPagination
+  // renderExpansionContent
+
   ExpandableDataTable({
     Key? key,
     required this.rows,
@@ -97,6 +105,7 @@ class ExpandableDataTable extends StatefulWidget {
     this.editDialog,
     this.onPageChanged,
     this.customPagination,
+    this.expansionContent,
   })  : assert(visibleColumnCount > 0),
         assert(
           rows.isNotEmpty ? headers.length == rows.first.cells.length : true,
@@ -312,7 +321,8 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
           _createRowCells(headerNames, rowData, titleCells, expansionCells);
 
-          return buildSingleRow(context, index, expansionCells, titleCells);
+          return buildSingleRow(
+              context, index, rowData, expansionCells, titleCells);
         },
       ),
     );
@@ -321,6 +331,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
   Container buildSingleRow(
     BuildContext context,
     int index,
+    ExpandableRow row,
     List<CellItem> expansionCells,
     List<CellItem> titleCells,
   ) {
@@ -347,7 +358,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
           title: buildRowTitleContent(titleCells),
           onExpansionChanged: (val) => _onExpansionChange(val, index),
           childrenPadding: EdgeInsets.symmetric(vertical: context.lowValue),
-          children: buildExpansionContent(context, expansionCells),
+          children: buildExpansionContent(context, row, expansionCells),
         ),
       ),
     );
@@ -374,10 +385,15 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
   List<Widget> buildExpansionContent(
     BuildContext context,
+    ExpandableRow row,
     List<CellItem> expansionCells,
   ) {
     if (expansionCells.isEmpty) {
       return [];
+    } else if (widget.expansionContent != null) {
+      return [
+        widget.expansionContent!(row),
+      ];
     }
 
     return [
