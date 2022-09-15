@@ -394,7 +394,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
   ) {
     var boxDecoration = BoxDecoration(
       border: Border(
-        bottom: context.expandableTheme.rowsBorder,
+        bottom: context.expandableTheme.rowBorder,
       ),
     );
 
@@ -408,8 +408,8 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
           key: _keys != null ? _keys![index] : UniqueKey(),
           showExpansionIcon: expansionCells.isNotEmpty,
           expansionIcon: context.expandableTheme.expansionIcon,
-          collapsedBackgroundColor: context.expandableTheme.rowsColor,
-          backgroundColor: context.expandableTheme.rowsColor,
+          collapsedBackgroundColor: context.expandableTheme.rowColor,
+          backgroundColor: context.expandableTheme.rowColor,
           trailingWidth: _trailingWidth,
           secondTrailing: buildEditIcon(context, index),
           title: buildRowTitleContent(titleCells),

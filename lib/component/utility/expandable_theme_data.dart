@@ -5,16 +5,16 @@ class ExpandableThemeData {
   final TextStyle headerTextStyle;
 
   /// Text style of all rows.
-  final TextStyle rowsTextStyle;
+  final TextStyle rowTextStyle;
 
   /// Maximum number of lines for the text to span.
   ///
   /// If the text exceeds the given number of lines. It will be truncated according
-  /// to [rowsTextOverflow].
-  final int rowsTextMaxLines;
+  /// to [rowTextOverflow].
+  final int rowTextMaxLines;
 
   /// Visual overflow of the row's cell text.
-  final TextOverflow rowsTextOverflow;
+  final TextOverflow rowTextOverflow;
 
   /// Text style of expansion content.
   ///
@@ -26,17 +26,17 @@ class ExpandableThemeData {
 
   /// Expansion border color.
   ///
-  /// It overrides if rowsBorder is used.
+  /// It overrides if rowBorder is used.
   final Color expandedBorderColor;
 
   /// Background color of rows.
-  final Color rowsColor;
+  final Color rowColor;
 
   /// Border style of header row.
   final BorderSide headerBorder;
 
   /// Border style of all rows.
-  final BorderSide rowsBorder;
+  final BorderSide rowBorder;
 
   /// Icon showing editing feature.
   final Icon editIcon;
@@ -70,16 +70,16 @@ class ExpandableThemeData {
   factory ExpandableThemeData(
     BuildContext context, {
     TextStyle? headerTextStyle,
-    TextStyle? rowsTextStyle,
-    int? rowsTextMaxLines,
-    TextOverflow? rowsTextOverflow,
+    TextStyle? rowTextStyle,
+    int? rowTextMaxLines,
+    TextOverflow? rowTextOverflow,
     TextStyle? expandedTextStyle,
     Color? headerColor,
     Color? expandedBackgroundColor,
     Color? expandedBorderColor,
-    Color? rowsColor,
+    Color? rowColor,
     BorderSide? headerBorder,
-    BorderSide? rowsBorder,
+    BorderSide? rowBorder,
     Icon? editIcon,
     Icon? expansionIcon,
     double? paginationSize,
@@ -97,18 +97,18 @@ class ExpandableThemeData {
     const TextStyle fixText = TextStyle(fontSize: 13);
 
     headerTextStyle ??= theme.textTheme.bodyText1 ?? fixText;
-    rowsTextStyle ??= theme.textTheme.bodyText2 ?? fixText;
-    rowsTextMaxLines ??= 3;
-    rowsTextOverflow ??= TextOverflow.ellipsis;
+    rowTextStyle ??= theme.textTheme.bodyText2 ?? fixText;
+    rowTextMaxLines ??= 3;
+    rowTextOverflow ??= TextOverflow.ellipsis;
     expandedTextStyle ??= theme.textTheme.bodyText2 ?? fixText;
     headerColor ??= theme.scaffoldBackgroundColor;
     expandedBorderColor ??= colorScheme.onBackground;
-    rowsColor ??= theme.scaffoldBackgroundColor;
+    rowColor ??= theme.scaffoldBackgroundColor;
     headerBorder ??= const BorderSide(
       width: 2.5,
       color: Color(0xffeeeeee),
     );
-    rowsBorder ??= BorderSide.none;
+    rowBorder ??= BorderSide.none;
     editIcon ??= Icon(
       Icons.edit,
       color: theme.unselectedWidgetColor,
@@ -123,15 +123,15 @@ class ExpandableThemeData {
 
     return ExpandableThemeData.raw(
       headerTextStyle: headerTextStyle,
-      rowsTextStyle: rowsTextStyle,
-      rowsTextMaxLines: rowsTextMaxLines,
-      rowsTextOverflow: rowsTextOverflow,
+      rowTextStyle: rowTextStyle,
+      rowTextMaxLines: rowTextMaxLines,
+      rowTextOverflow: rowTextOverflow,
       expandedTextStyle: expandedTextStyle,
       headerColor: headerColor,
       expandedBorderColor: expandedBorderColor,
-      rowsColor: rowsColor,
+      rowColor: rowColor,
       headerBorder: headerBorder,
-      rowsBorder: rowsBorder,
+      rowBorder: rowBorder,
       editIcon: editIcon,
       expansionIcon: expansionIcon,
       paginationSize: paginationSize,
@@ -147,15 +147,15 @@ class ExpandableThemeData {
 
   const ExpandableThemeData.raw({
     required this.headerTextStyle,
-    required this.rowsTextStyle,
-    required this.rowsTextMaxLines,
-    required this.rowsTextOverflow,
+    required this.rowTextStyle,
+    required this.rowTextMaxLines,
+    required this.rowTextOverflow,
     required this.expandedTextStyle,
     required this.headerColor,
     required this.expandedBorderColor,
-    required this.rowsColor,
+    required this.rowColor,
     required this.headerBorder,
-    required this.rowsBorder,
+    required this.rowBorder,
     required this.editIcon,
     required this.expansionIcon,
     required this.paginationSize,

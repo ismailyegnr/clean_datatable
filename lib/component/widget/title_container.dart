@@ -35,9 +35,9 @@ class TitleContainer extends StatelessWidget {
       ),
       child: Text(
         element.value.toString(),
-        style: context.expandableTheme.rowsTextStyle,
-        maxLines: context.expandableTheme.rowsTextMaxLines,
-        overflow: context.expandableTheme.rowsTextOverflow,
+        style: context.expandableTheme.rowTextStyle,
+        maxLines: context.expandableTheme.rowTextMaxLines,
+        overflow: context.expandableTheme.rowTextOverflow,
       ),
     );
   }

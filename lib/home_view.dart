@@ -63,8 +63,7 @@ class _HomeViewState extends State<HomeView> {
 
   void createDataSource() {
     headers = [
-      ExpandableColumn<int>(
-          columnTitle: "ID First name First name", columnFlex: 1),
+      ExpandableColumn<int>(columnTitle: "ID", columnFlex: 1),
       ExpandableColumn<String>(columnTitle: "First name", columnFlex: 2),
       ExpandableColumn<String>(columnTitle: "Last name", columnFlex: 2),
       ExpandableColumn<String>(columnTitle: "Maiden name", columnFlex: 2),
@@ -75,8 +74,7 @@ class _HomeViewState extends State<HomeView> {
 
     rows = userList.map<ExpandableRow>((e) {
       return ExpandableRow(cells: [
-        ExpandableCell<int>(
-            columnTitle: "ID First name First name", value: e.id),
+        ExpandableCell<int>(columnTitle: "ID", value: e.id),
         ExpandableCell<String>(columnTitle: "First name", value: e.firstName),
         ExpandableCell<String>(columnTitle: "Last name", value: e.lastName),
         ExpandableCell<String>(columnTitle: "Maiden name", value: e.maidenName),
@@ -97,7 +95,7 @@ class _HomeViewState extends State<HomeView> {
           ? ExpandableTheme(
               data: ExpandableThemeData(
                 context,
-                rowsBorder: const BorderSide(color: Colors.amber),
+                rowBorder: const BorderSide(color: Colors.amber),
                 expandedBorderColor: Colors.transparent,
                 paginationSize: 48,
               ),
