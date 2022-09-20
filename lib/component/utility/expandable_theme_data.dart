@@ -32,6 +32,12 @@ class ExpandableThemeData {
   /// Background color of rows.
   final Color rowColor;
 
+  /// Background color of the even indexed rows.
+  final Color? evenRowColor;
+
+  /// Background color of the odd indexed rows.
+  final Color? oddRowColor;
+
   /// Border style of header row.
   final BorderSide headerBorder;
 
@@ -78,6 +84,8 @@ class ExpandableThemeData {
     Color? expandedBackgroundColor,
     Color? expandedBorderColor,
     Color? rowColor,
+    Color? evenRowColor,
+    Color? oddRowColor,
     BorderSide? headerBorder,
     BorderSide? rowBorder,
     Icon? editIcon,
@@ -142,6 +150,8 @@ class ExpandableThemeData {
       paginationBorderColor: paginationBorderColor,
       paginationBorderRadius: paginationBorderRadius,
       paginationBorderWidth: paginationBorderWidth,
+      evenRowColor: evenRowColor,
+      oddRowColor: oddRowColor,
     );
   }
 
@@ -154,6 +164,8 @@ class ExpandableThemeData {
     required this.headerColor,
     required this.expandedBorderColor,
     required this.rowColor,
+    this.evenRowColor,
+    this.oddRowColor,
     required this.headerBorder,
     required this.rowBorder,
     required this.editIcon,

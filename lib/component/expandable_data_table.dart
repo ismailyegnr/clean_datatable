@@ -398,6 +398,16 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
       ),
     );
 
+    Color? currentRowColor;
+    if (context.expandableTheme.evenRowColor != null &&
+        context.expandableTheme.oddRowColor != null) {
+      if (index % 2 == 0) {
+        currentRowColor = context.expandableTheme.evenRowColor;
+      } else {
+        currentRowColor = context.expandableTheme.oddRowColor;
+      }
+    }
+
     return Container(
       decoration: boxDecoration,
       child: Theme(
@@ -408,8 +418,9 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
           key: _keys != null ? _keys![index] : UniqueKey(),
           showExpansionIcon: expansionCells.isNotEmpty,
           expansionIcon: context.expandableTheme.expansionIcon,
-          collapsedBackgroundColor: context.expandableTheme.rowColor,
-          backgroundColor: context.expandableTheme.rowColor,
+          collapsedBackgroundColor:
+              currentRowColor ?? context.expandableTheme.rowColor,
+          backgroundColor: currentRowColor ?? context.expandableTheme.rowColor,
           trailingWidth: _trailingWidth,
           secondTrailing: buildEditIcon(context, index),
           title: buildRowTitleContent(titleCells),

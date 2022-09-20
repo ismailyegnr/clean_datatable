@@ -98,6 +98,9 @@ class _HomeViewState extends State<HomeView> {
                 rowBorder: const BorderSide(color: Colors.amber),
                 expandedBorderColor: Colors.transparent,
                 paginationSize: 48,
+                evenRowColor: Colors.amber,
+                oddRowColor: Colors.red,
+                rowColor: Colors.green,
               ),
               child: ExpandableDataTable(
                 rows: rows,
