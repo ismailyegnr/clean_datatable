@@ -7,7 +7,13 @@ class ExpandableThemeData {
   /// Text style of all rows.
   final TextStyle rowTextStyle;
 
-  /// Maximum number of lines for the text to span.
+  /// Maximum number of lines for header text to span.
+  ///
+  /// If the text exceeds the given number of lines. It will be truncated according
+  /// to [rowTextOverflow].
+  final int headerTextMaxLines;
+
+  /// Maximum number of lines for row text to span.
   ///
   /// If the text exceeds the given number of lines. It will be truncated according
   /// to [rowTextOverflow].
@@ -77,6 +83,7 @@ class ExpandableThemeData {
     BuildContext context, {
     TextStyle? headerTextStyle,
     TextStyle? rowTextStyle,
+    int? headerTextMaxLines,
     int? rowTextMaxLines,
     TextOverflow? rowTextOverflow,
     TextStyle? expandedTextStyle,
@@ -106,6 +113,7 @@ class ExpandableThemeData {
 
     headerTextStyle ??= theme.textTheme.bodyText1 ?? fixText;
     rowTextStyle ??= theme.textTheme.bodyText2 ?? fixText;
+    headerTextMaxLines ??= 2;
     rowTextMaxLines ??= 3;
     rowTextOverflow ??= TextOverflow.ellipsis;
     expandedTextStyle ??= theme.textTheme.bodyText2 ?? fixText;
@@ -132,6 +140,7 @@ class ExpandableThemeData {
     return ExpandableThemeData.raw(
       headerTextStyle: headerTextStyle,
       rowTextStyle: rowTextStyle,
+      headerTextMaxLines: headerTextMaxLines,
       rowTextMaxLines: rowTextMaxLines,
       rowTextOverflow: rowTextOverflow,
       expandedTextStyle: expandedTextStyle,
@@ -158,6 +167,7 @@ class ExpandableThemeData {
   const ExpandableThemeData.raw({
     required this.headerTextStyle,
     required this.rowTextStyle,
+    required this.headerTextMaxLines,
     required this.rowTextMaxLines,
     required this.rowTextOverflow,
     required this.expandedTextStyle,

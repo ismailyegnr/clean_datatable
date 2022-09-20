@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/constants.dart';
 import '../extension/context_extension.dart';
 import '../model/expandable_column.dart';
 import '../utility/sort_information.dart';
@@ -56,7 +57,9 @@ class TableHeader extends StatelessWidget {
       onTap: () => onTitleTap(column),
       child: SizedBox(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: context.lowValue),
+          padding: EdgeInsets.symmetric(vertical: context.lowValue).copyWith(
+            right: GeneralConstants.titlePadding,
+          ),
           child: Row(
             children: [
               Flexible(
@@ -64,7 +67,7 @@ class TableHeader extends StatelessWidget {
                   column.columnTitle,
                   style: context.expandableTheme.headerTextStyle,
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+                  maxLines: context.expandableTheme.headerTextMaxLines,
                 ),
               ),
               Visibility(

@@ -63,7 +63,8 @@ class _HomeViewState extends State<HomeView> {
 
   void createDataSource() {
     headers = [
-      ExpandableColumn<int>(columnTitle: "ID", columnFlex: 1),
+      ExpandableColumn<int>(
+          columnTitle: "ID keke kekek kekeke kekekek", columnFlex: 1),
       ExpandableColumn<String>(columnTitle: "First name", columnFlex: 2),
       ExpandableColumn<String>(columnTitle: "Last name", columnFlex: 2),
       ExpandableColumn<String>(columnTitle: "Maiden name", columnFlex: 2),
@@ -74,7 +75,8 @@ class _HomeViewState extends State<HomeView> {
 
     rows = userList.map<ExpandableRow>((e) {
       return ExpandableRow(cells: [
-        ExpandableCell<int>(columnTitle: "ID", value: e.id),
+        ExpandableCell<int>(
+            columnTitle: "ID keke kekek kekeke kekekek", value: e.id),
         ExpandableCell<String>(columnTitle: "First name", value: e.firstName),
         ExpandableCell<String>(columnTitle: "Last name", value: e.lastName),
         ExpandableCell<String>(columnTitle: "Maiden name", value: e.maidenName),
@@ -101,6 +103,7 @@ class _HomeViewState extends State<HomeView> {
                 evenRowColor: Colors.amber,
                 oddRowColor: Colors.red,
                 rowColor: Colors.green,
+                headerTextMaxLines: 4,
               ),
               child: ExpandableDataTable(
                 rows: rows,

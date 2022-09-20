@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/constants.dart';
 import '../extension/context_extension.dart';
 import '../model/cell_item.dart';
 
@@ -30,8 +31,8 @@ class TitleContainer extends StatelessWidget {
 
   Padding _buildCell(BuildContext context, CellItem element) {
     return Padding(
-      padding: EdgeInsets.only(
-        right: context.dynamicWidth(0.02),
+      padding: const EdgeInsets.only(
+        right: GeneralConstants.titlePadding,
       ),
       child: Text(
         element.value.toString(),
