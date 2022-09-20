@@ -104,6 +104,7 @@ class _HomeViewState extends State<HomeView> {
                 oddRowColor: Colors.red,
                 rowColor: Colors.green,
                 headerTextMaxLines: 4,
+                headerSortIconColor: Colors.indigo,
               ),
               child: ExpandableDataTable(
                 rows: rows,

@@ -56,6 +56,8 @@ class TableHeader extends StatelessWidget {
 
   GestureDetector buildHeaderTitle(
       BuildContext context, ExpandableColumn<dynamic> column) {
+    Color? iconColor = context.expandableTheme.headerSortIconColor;
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () => onTitleTap(column),
@@ -78,8 +80,14 @@ class TableHeader extends StatelessWidget {
                 visible: currentSort.sortedColumn != null &&
                     currentSort.sortedColumn == column,
                 child: currentSort.sortOption == SortOption.ASC
-                    ? const Icon(Icons.arrow_drop_up)
-                    : const Icon(Icons.arrow_drop_down),
+                    ? Icon(
+                        Icons.arrow_drop_up,
+                        color: iconColor,
+                      )
+                    : Icon(
+                        Icons.arrow_drop_down,
+                        color: iconColor,
+                      ),
               ),
             ],
           ),
