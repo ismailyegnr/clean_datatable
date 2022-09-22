@@ -33,6 +33,9 @@ class ExpandableThemeData {
   /// Color of the header sort arrow icon.
   final Color? headerSortIconColor;
 
+  /// Height of the header widget.
+  final double? headerHeight;
+
   /// Expansion border color.
   ///
   /// It overrides if rowBorder is used.
@@ -92,6 +95,7 @@ class ExpandableThemeData {
     TextStyle? expandedTextStyle,
     Color? headerColor,
     Color? headerSortIconColor,
+    double? headerHeight,
     Color? expandedBackgroundColor,
     Color? expandedBorderColor,
     Color? rowColor,
@@ -150,6 +154,7 @@ class ExpandableThemeData {
       expandedTextStyle: expandedTextStyle,
       headerColor: headerColor,
       headerSortIconColor: headerSortIconColor,
+      headerHeight: headerHeight,
       expandedBorderColor: expandedBorderColor,
       rowColor: rowColor,
       headerBorder: headerBorder,
@@ -178,6 +183,7 @@ class ExpandableThemeData {
     required this.expandedTextStyle,
     required this.headerColor,
     this.headerSortIconColor,
+    this.headerHeight,
     required this.expandedBorderColor,
     required this.rowColor,
     this.evenRowColor,
