@@ -57,13 +57,6 @@ class ExpandableDataTable extends StatefulWidget {
   ///
   final void Function(int page)? onPageChanged;
 
-  /// This determines whether to enable the multi-extension feature.
-  ///
-  /// Default value is [true].
-  ///
-  /// If this value is false. Only one row will be expanded at the same time.
-  final bool enableMultiExpansion;
-
   /// Specifies the number of rows to be used on a single page.
   ///
   /// It defaults to 10.
@@ -156,9 +149,8 @@ class ExpandableDataTable extends StatefulWidget {
     required this.rows,
     required this.headers,
     required this.visibleColumnCount,
-    this.onRowChanged,
-    this.enableMultiExpansion = true,
     this.pageSize = 10,
+    this.onRowChanged,
     this.onPageChanged,
     this.renderEditDialog,
     this.renderCustomPagination,
@@ -174,18 +166,12 @@ class ExpandableDataTable extends StatefulWidget {
 }
 
 class _ExpandableDataTableState extends State<ExpandableDataTable> {
-  List<GlobalKey<custom_tile.ExpansionTileState>>? _keys;
   List<ExpandableColumn> _headerTitles = [];
 
   /// Stores the sorted state data of the data table.
   ///
   /// This helps for building.
   List<List<SortableRow>> _sortedRowsList = [];
-
-  /// Indicates the index of the expanded single row in a page,
-  ///
-  /// This is only used if [enableMultiExpansion] is false.
-  int? _expandedRowIndex;
 
   int _totalPageCount = 0;
 
@@ -203,16 +189,6 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
     super.initState();
 
     _composeRowsList(widget.rows, isInit: true);
-
-    if (!widget.enableMultiExpansion) {
-      _expandedRowIndex = -1;
-
-      _keys = [];
-
-      for (int i = 0; i < widget.pageSize; i++) {
-        _keys!.add(GlobalKey<custom_tile.ExpansionTileState>());
-      }
-    }
   }
 
   @override
@@ -236,24 +212,6 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
       _sortedRowsList[_totalPageCount - 1].add(
         isInit ? SortableRow(i, row: list[i]) : list[i],
       );
-    }
-  }
-
-  void _onExpansionChange(bool val, int index) {
-    if (widget.enableMultiExpansion == false) {
-      if (val) {
-        if (_expandedRowIndex != -1) {
-          if (_keys![_expandedRowIndex!].currentState != null) {
-            _keys![_expandedRowIndex!].currentState!.handleTap();
-          }
-        }
-        _expandedRowIndex = index;
-        setState(() {});
-      } else {
-        setState(() {
-          _expandedRowIndex = -1;
-        });
-      }
     }
   }
 
@@ -303,11 +261,6 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
   /// Close expanded rows while page is changing.
   void _changePage(int newPage) {
-    if (_keys != null && _expandedRowIndex != -1) {
-      _keys![_expandedRowIndex!].currentState?.handleTap();
-      _expandedRowIndex = -1;
-    }
-
     if (widget.onPageChanged != null) {
       widget.onPageChanged!(newPage);
     }
@@ -415,7 +368,6 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
           dividerColor: context.expandableTheme.expandedBorderColor,
         ),
         child: custom_tile.ExpansionTile(
-          key: _keys != null ? _keys![index] : UniqueKey(),
           showExpansionIcon: expansionCells.isNotEmpty,
           expansionIcon: context.expandableTheme.expansionIcon,
           collapsedBackgroundColor:
@@ -424,7 +376,6 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
           trailingWidth: _trailingWidth,
           secondTrailing: buildEditIcon(context, index),
           title: buildRowTitleContent(titleCells),
-          onExpansionChanged: (val) => _onExpansionChange(val, index),
           childrenPadding: EdgeInsets.symmetric(vertical: context.lowValue),
           children: buildExpansionContent(context, row, expansionCells),
         ),
